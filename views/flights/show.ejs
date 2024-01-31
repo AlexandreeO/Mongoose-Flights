@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Flight Details</title>
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+    </head>
+
+    <body>
+        <%- include('../partials/navbar') %>
+        <div class="container">
+            <h1>Flight Details</h1>
+
+            <div>
+                <strong>Airline:</strong> <%= flight.airline %><br />
+                <strong>Flight No:</strong> <%= flight.flightNo %><br />
+                <strong>Departs:</strong> <%= flight.departs.toLocaleString()
+                %><br />
+
+                <h2>Destinations:</h2>
+                <% if (flight.destinations.length > 0) { %>
+                <ul>
+                    <% flight.destinations.forEach(destination => { %>
+                    <li>
+                        <strong>Airport:</strong> <%= destination.airport %> |
+                        <strong>Arrival:</strong> <%=
+                        destination.arrival.toLocaleString() %>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else { %>
+                <p>No destinations available for this flight.</p>
+                <% } %>
+
+                <!-- List of tickets -->
+                <h2>Tickets:</h2>
+                <% if (tickets && tickets.length > 0) { %>
+                <ul>
+                    <% tickets.forEach(ticket => { %>
+                    <li>
+                        <strong>Seat:</strong> <%= ticket.seat %> |
+                        <strong>Price:</strong> <%= ticket.price %> |
+
+                        <!-- Delete form for each ticket -->
+                        <form
+                            action="/flights/<%= flight._id %>/tickets/<%= ticket._id %>?_method=DELETE"
+                            method="post"
+                            class="delete-form"
+                        >
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else { %>
+                <p>No tickets available for this flight.</p>
+                <% } %>
+
+                <!-- Form for adding a new ticket -->
+                <form
+                    action="/flights/<%= flight._id %>/tickets"
+                    method="post"
+                    class="new-ticket-form"
+                >
+                    <h2>Add New Ticket</h2>
+
+                    <label for="seat">Seat:</label>
+                    <input type="text" name="seat" required />
+
+                    <label for="price">Price:</label>
+                    <input type="number" name="price" min="0" required />
+
+                    <button type="submit">Create Ticket</button>
+                </form>
+
+                <!-- Form for adding a new destination -->
+                <form
+                    action="/flights/<%= flight._id %>/add-destination"
+                    method="post"
+                >
+                    <h2>Add Destination</h2>
+                    <label for="newAirport">Airport:</label>
+                    <input type="text" name="newAirport" required />
+
+                    <label for="newArrival">Arrival Date/Time:</label>
+                    <input type="datetime-local" name="newArrival" required />
+
+                    <button type="submit">Add Destination</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
